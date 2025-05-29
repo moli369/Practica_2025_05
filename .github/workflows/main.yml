@@ -28,4 +28,25 @@ jobs:
         run: |
           echo Línea 1 de un script de varias líneas
           echo Línea 2 de un script de varias líneas
+      - name: Validaciones previas
+        run: |
+          hostname
+          echo "-----------------------------"
+          pwd
+          echo "-----------------------------"
+          find .
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      - name: Validaciones posteriores
+        run: |
+          hostname
+          echo "-----------------------------"
+          pwd
+          echo "-----------------------------"
+          find .
+
+          
+
 
