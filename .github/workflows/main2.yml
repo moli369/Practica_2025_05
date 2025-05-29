@@ -1,0 +1,54 @@
+name: CI Pipeline con Variables de Entorno
+
+# Variables globales para todo el workflow
+env:
+  APP_NAME: "mi-app"
+  LOG_LEVEL: "info"
+  AWS_REGION: "us-east-1"  # Usado en todos los jobs
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    # Variables específicas del job "build"
+    env:
+      BUILD_DIR: "./dist"
+      NODE_VERSION: "18"
+    
+    steps:
+    - name: Build app
+      # Variables específicas del step
+      env:
+        BUILD_ENV: "production"
+        API_KEY: ${{ secrets.PROD_API_KEY }}  # Secreto de GitHub
+      run: |
+        echo "Construyendo $APP_NAME en $BUILD_ENV"
+        echo "API_KEY: ${{env.API_KEY}}"
+        echo "API_KEY: $API_KEY"
+        echo "secrets.PROD_API_KEY: ${{ secrets.PROD_API_KEY }}"
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    
+    # Variables para el job "test"
+    env:
+      TEST_TIMEOUT: "30000"
+    
+    steps:
+    - name: Run tests
+      env:
+        DB_URL: "postgresql://test:test@localhost:5432/testdb"
+        CI: true  # Variable estándar para entornos CI
+      run: |
+        echo "Ejecutando pruebas en $AWS_REGION"
+        echo "Timeout configurado: $TEST_TIMEOUT ms"
+        echo "URL de DB: $DB_URL"
+        echo "The branch or tag ref that triggered the workflow: $GITHUB_REF"
+        echo "The name of the workflow: $GITHUB_WORKFLOW"
+        echo "The name of the person or app that initiated the workflow: $GITHUB_ACTOR"
+        echo "The GitHub workspace directory path: $GITHUB_WORKSPACE"
+        echo "==============================================="
+        echo "Mostrando evento: ${{toJSON(github.event)}}"
