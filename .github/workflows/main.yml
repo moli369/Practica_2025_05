@@ -23,3 +23,9 @@ jobs:
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: echo "Script de una sola línea!"
+        # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          echo Línea 1 de un script de varias líneas
+          echo Línea 2 de un script de varias líneas
+
